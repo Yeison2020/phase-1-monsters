@@ -16,11 +16,11 @@ input1.name = "username";
 
 const input2 = makeEl("input");
 input2.type = "text";
-input2.name = "username";
+input2.name = "userAge";
 
 const input3 = makeEl("input");
 input3.type = "text";
-input3.name = "username";
+input3.name = "userDescription";
 
 // Button =
 const btnSubmit = makeEl("input");
@@ -34,9 +34,9 @@ labelAge.innerText = " Age: ";
 labelDescription.innerText = " Description: ";
 //----------------------------------------
 
-const h2 = makeEl("h2");
-const h4 = makeEl("h4");
-const p = makeEl("p");
+let h2 = makeEl("h2");
+let h4 = makeEl("h4");
+let p = makeEl("p");
 // ------Adding to the DOM
 
 form.append(
@@ -53,24 +53,69 @@ divParent.append(form);
 
 // Monster Container
 const monsterContainer = document.getElementById("monster-container");
-/// Creating My fetch Data to be display
+// Add btn foward 50
+const btnForward = document.getElementById("forward");
+const btnBack = document.getElementById("back");
+// Event listener btn forward
+
+btnForward.addEventListener("click", () => foward());
+
+function foward() {
+  let numberFoward = 51;
+
+  /// Creating My fetch Data to be display
+  return (numberFoward += 50);
+  {
+  }
+}
+
+// Using POST TO ADD New monster to the dbd.json WORLKING
 fetch(BASE_URL)
   .then((resp) => resp.json())
-  .then((data) => renderInformation(data));
+  .then((data) => {
+    const data50 = data.slice(0, foward());
+    data50.forEach(renderInformation);
+  });
 // Here the data is coming as Array of Objects
 
-function renderInformation(data) {
-  const data50 = data;
-  console.log(data50);
+function renderInformation(e) {
   const divsInfo = makeEl("div");
-
-  for (let e = 0; e < data50.length; e++) {
-    h2.textContent = data50[e].name;
-    h4.textContent = data50[e].age;
-    p.textContent = data50[e].description;
-    divsInfo.append(h2, h4, p);
-  }
+  let h2 = makeEl("h2");
+  let h4 = makeEl("h4");
+  let p = makeEl("p");
+  h2.textContent = e.name;
+  h4.textContent = e.age;
+  p.textContent = e.description;
+  divsInfo.append(h2, h4, p);
   monsterContainer.append(divsInfo);
 }
 
-// console.log(data.slice(0, 51));
+function PostCreateMonster(e) {
+  e.preventDefault();
+  const name = e.target.username.value;
+  const age = e.target.userAge.value;
+  const description = e.target.userDescription.value;
+  const dataObject = {
+    name: name,
+    age: age,
+    description: description,
+  };
+
+  fetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(dataObject),
+  })
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log("Success !");
+      console.log(data);
+    });
+  form.reset();
+}
+
+//
+form.addEventListener("submit", (e) => PostCreateMonster(e));
